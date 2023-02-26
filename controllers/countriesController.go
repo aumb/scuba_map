@@ -21,7 +21,5 @@ func GetAllCountries(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"country": results,
-	})
+	c.JSON(http.StatusOK, results)
 }
