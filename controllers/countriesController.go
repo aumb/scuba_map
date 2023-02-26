@@ -10,9 +10,9 @@ import (
 )
 
 func GetAllCountries(c *gin.Context) {
-
 	var countries []models.Country
-	result := initializers.DB.DB.From("countries").Select("*").Execute(&countries)
+
+	result := initializers.Client.DB.From("countries").Select("*").Execute(&countries)
 
 	if result != nil {
 		fmt.Println(result)
