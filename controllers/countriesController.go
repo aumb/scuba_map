@@ -5,13 +5,14 @@ import (
 	"net/http"
 
 	"github.com/aumb/scuba_map/initializers"
+	"github.com/aumb/scuba_map/models"
 	"github.com/gin-gonic/gin"
 )
 
 func GetAllCountries(c *gin.Context) {
 
-	var results map[string]interface{}
-	result := initializers.DB.DB.From("countries").Select("*").Single().Execute(&results)
+	var countries []models.Country
+	result := initializers.DB.DB.From("countries").Select("*").Execute(&countries)
 
 	if result != nil {
 		fmt.Println(result)
@@ -21,5 +22,5 @@ func GetAllCountries(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, results)
+	c.JSON(http.StatusOK, countries)
 }
