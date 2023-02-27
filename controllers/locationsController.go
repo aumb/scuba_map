@@ -16,9 +16,7 @@ func GetAllLocations(c *gin.Context) {
 
 	if result != nil {
 		fmt.Println(result)
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "An error has occured",
-		})
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Message: "An error has occured", Code: http.StatusBadRequest})
 		return
 	}
 
@@ -34,9 +32,7 @@ func BulkPostAllCountries(c *gin.Context) {
 
 	if binder != nil {
 		fmt.Println(binder)
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "Could not parse objects",
-		})
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Message: "Could not parse objects", Code: http.StatusBadRequest})
 		return
 	}
 
@@ -44,9 +40,7 @@ func BulkPostAllCountries(c *gin.Context) {
 
 	if result != nil {
 		fmt.Println(result)
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "An error has occured",
-		})
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Message: "An error has occured", Code: http.StatusBadRequest})
 		return
 	}
 
