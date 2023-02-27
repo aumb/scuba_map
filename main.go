@@ -14,7 +14,8 @@ func init() {
 func main() {
 	r := gin.Default()
 
-	r.GET("/countries", controllers.GetAllCountries)
+	r.GET("/locations", controllers.GetAllLocations)
+	r.POST("/bulk-locations", controllers.BulkPostAllCountries)
 
 	r.Run()
 }
