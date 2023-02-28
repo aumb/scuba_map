@@ -6,13 +6,16 @@ import (
 
 	"github.com/aumb/scuba_map/initializers"
 	"github.com/aumb/scuba_map/models"
+	"github.com/aumb/scuba_map/utils"
 	"github.com/gin-gonic/gin"
 )
 
 func GetAllLocations(c *gin.Context) {
 	var locations []models.Location
 
-	result := initializers.Client.DB.From("locations").Select("*").Execute(&locations)
+	pagination := utils.GeneratePaginationFromRequest(c)
+
+	result := initializers.Client.DB.From("locations").Select("*").LimitWithOffset(pagination.Limit, pagination.Offset).Execute(&locations)
 
 	if result != nil {
 		fmt.Println(result)
