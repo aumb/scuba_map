@@ -8,6 +8,7 @@ import (
 	"github.com/aumb/scuba_map/models"
 	"github.com/aumb/scuba_map/utils"
 	"github.com/gin-gonic/gin"
+	"github.com/supabase/postgrest-go"
 )
 
 func GetAllLocations(c *gin.Context) {
@@ -15,7 +16,7 @@ func GetAllLocations(c *gin.Context) {
 
 	pagination := utils.GeneratePaginationFromRequest(c)
 
-	query := initializers.Client.From("location").Select("*", "", false).Range(pagination.Offset, pagination.Offset+pagination.Limit, "").Execute
+	query := initializers.Client.From("locations").Select("*", "", false).Order("name", &postgrest.OrderOpts{Ascending: true}).Range(pagination.Offset, pagination.Offset+pagination.Limit, "").Execute
 	error := utils.QueryAndUnmarshal(query, &locations)
 
 	if error != nil {
