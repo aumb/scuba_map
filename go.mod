@@ -30,6 +30,7 @@ require (
 	github.com/nedpals/postgrest-go v0.1.3 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.6 // indirect
 	github.com/radovskyb/watcher v1.0.7 // indirect
+	github.com/supabase/postgrest-go v0.0.7 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.10 // indirect
 	golang.org/x/arch v0.2.0 // indirect

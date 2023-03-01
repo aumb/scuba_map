@@ -15,19 +15,24 @@ func GetAllLocations(c *gin.Context) {
 
 	pagination := utils.GeneratePaginationFromRequest(c)
 
-	result := initializers.Client.DB.From("locations").Select("*").LimitWithOffset(pagination.Limit, pagination.Offset).Execute(&locations)
+	query := initializers.Client.From("location").Select("*", "", false).Range(pagination.Offset, pagination.Offset+pagination.Limit, "").Execute
+	error := utils.QueryAndUnmarshal(query, &locations)
 
-	if result != nil {
-		fmt.Println(result)
-		c.JSON(http.StatusBadRequest, models.ErrorResponse{Message: "An error has occured", Code: http.StatusBadRequest})
+	if error != nil {
+		fmt.Println(error)
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Message: models.GenericError, Code: http.StatusBadRequest})
 		return
 	}
 
 	c.JSON(http.StatusOK, locations)
 }
 
+//TODO(ELIO): IMPLEMENT GET ONE LOCATION
+
+//TODO:(ELIO) IMPLEMENT DELETE ONE LOCATION
+
 // Only to be used when inserting new countries in a bulk
-func BulkPostAllCountries(c *gin.Context) {
+func BulkPostAllLocations(c *gin.Context) {
 	var locations []models.Location
 	var results []models.Location
 
@@ -35,17 +40,18 @@ func BulkPostAllCountries(c *gin.Context) {
 
 	if binder != nil {
 		fmt.Println(binder)
-		c.JSON(http.StatusBadRequest, models.ErrorResponse{Message: "Could not parse objects", Code: http.StatusBadRequest})
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Message: models.ParseRequestError, Code: http.StatusBadRequest})
 		return
 	}
 
-	result := initializers.Client.DB.From("locations").Insert(locations).Execute(&results)
+	query := initializers.Client.From("locations").Insert(locations, true, "", "", "").Execute
+	error := utils.QueryAndUnmarshal(query, &results)
 
-	if result != nil {
-		fmt.Println(result)
-		c.JSON(http.StatusBadRequest, models.ErrorResponse{Message: "An error has occured", Code: http.StatusBadRequest})
+	if error != nil {
+		fmt.Println(error)
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Message: models.GenericError, Code: http.StatusBadRequest})
 		return
 	}
 
-	c.JSON(http.StatusOK, results)
+	c.JSON(http.StatusCreated, results)
 }

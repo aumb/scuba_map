@@ -21,6 +21,10 @@ func GeneratePaginationFromRequest(c *gin.Context) models.Pagination {
 		case "page":
 			page, _ = strconv.Atoi(queryValue)
 
+			if page <= 0 {
+				page = 1
+			}
+
 		case "sort":
 			sort = queryValue
 
