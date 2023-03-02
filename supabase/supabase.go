@@ -7,7 +7,7 @@ import (
 	"net/url"
 	"time"
 
-	postgrest_go "github.com/nedpals/postgrest-go/pkg"
+	postgrest_go "github.com/aumb/scuba_map/postgrest"
 )
 
 const (

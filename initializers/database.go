@@ -3,13 +3,13 @@ package initializers
 import (
 	"os"
 
-	supa "github.com/nedpals/supabase-go"
+	"github.com/aumb/scuba_map/supabase"
 )
 
-var Client *supa.Client
+var Client *supabase.Client
 
 func ConnectToDB() {
 	supabaseUrl := os.Getenv("DATABASE_URL")
 	supabaseKey := os.Getenv("DATABASE_KEY")
-	Client = supa.CreateClient(supabaseUrl, supabaseKey)
+	Client = supabase.CreateClient(supabaseUrl, supabaseKey)
 }

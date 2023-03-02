@@ -304,9 +304,37 @@ var DefaultOrderOpts = OrderOpts{
 	ForeignTable: "",
 }
 
+type SelectRequestBuilder struct {
+	FilterRequestBuilder
+}
+
+func (b *SelectRequestBuilder) FilterSelect(column, operator, criteria string) *SelectRequestBuilder {
+	if b.negateNext {
+		b.negateNext = false
+		operator = "not." + operator
+	}
+	b.params.Add(SanitizeParam(column), operator+"."+criteria)
+	return b
+}
+
+func (b *SelectRequestBuilder) Limit(size int) *SelectRequestBuilder {
+	return b.LimitWithOffset(size, 0)
+}
+
+func (b *SelectRequestBuilder) LimitWithOffset(size int, start int) *SelectRequestBuilder {
+	b.header.Set("Range-Unit", "items")
+	b.header.Set("Range", fmt.Sprintf("%d-%d", start, start+size-1))
+	return b
+}
+
+func (b *SelectRequestBuilder) Single() *SelectRequestBuilder {
+	b.header.Set("Accept", "application/vnd.pgrst.object+json")
+	return b
+}
+
 // Orders the result with the specified column. A pointer to an OrderOpts
 // object can be supplied to specify ordering options.
-func (b *FilterRequestBuilder) Order(column string, opts *OrderOpts) *FilterRequestBuilder {
+func (b *SelectRequestBuilder) Order(column string, opts *OrderOpts) *SelectRequestBuilder {
 	if opts == nil {
 		opts = &DefaultOrderOpts
 	}
@@ -328,27 +356,10 @@ func (b *FilterRequestBuilder) Order(column string, opts *OrderOpts) *FilterRequ
 
 	existingOrder, ok := b.params[key]
 	if ok && existingOrder != nil {
-		return b.Filter(column, key, fmt.Sprintf("%s,%s.%s.%s", existingOrder, column, ascendingString, nullsString))
+		b.params.Add(key, fmt.Sprintf("%s,%s.%s.%s", existingOrder, column, ascendingString, nullsString))
 	} else {
-		return b.Filter(column, key, fmt.Sprintf("%s.%s.%s", column, ascendingString, nullsString))
+		b.params.Add(key, fmt.Sprintf("%s.%s.%s", column, ascendingString, nullsString))
 	}
-}
 
-type SelectRequestBuilder struct {
-	FilterRequestBuilder
-}
-
-func (b *SelectRequestBuilder) Limit(size int) *SelectRequestBuilder {
-	return b.LimitWithOffset(size, 0)
-}
-
-func (b *SelectRequestBuilder) LimitWithOffset(size int, start int) *SelectRequestBuilder {
-	b.header.Set("Range-Unit", "items")
-	b.header.Set("Range", fmt.Sprintf("%d-%d", start, start+size-1))
-	return b
-}
-
-func (b *SelectRequestBuilder) Single() *SelectRequestBuilder {
-	b.header.Set("Accept", "application/vnd.pgrst.object+json")
 	return b
 }
