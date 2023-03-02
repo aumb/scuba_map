@@ -40,7 +40,7 @@ func BulkPostAllLocations(c *gin.Context) {
 
 	if binder != nil {
 		fmt.Println(binder)
-		c.JSON(http.StatusBadRequest, models.ErrorResponse{Message: "Could not parse objects", Code: http.StatusBadRequest})
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Message: models.ParseRequestError, Code: http.StatusBadRequest})
 		return
 	}
 
