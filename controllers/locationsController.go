@@ -16,10 +16,10 @@ func GetAllLocations(c *gin.Context) {
 
 	pagination := utils.GeneratePaginationFromRequest(c)
 
-	result := initializers.Client.DB.From("locations").Select("*").Order("name", &postgrest_go.OrderOpts{Ascending: true}).LimitWithOffset(pagination.Limit, pagination.Offset).Execute(&locations)
+	err := initializers.Client.DB.From("locations").Select("*").Order("name", &postgrest_go.OrderOpts{Ascending: true}).LimitWithOffset(pagination.Limit, pagination.Offset).Execute(&locations)
 
-	if result != nil {
-		fmt.Println(result)
+	if err != nil {
+		fmt.Println(err)
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{Message: models.GenericError, Code: http.StatusBadRequest})
 		return
 	}
@@ -44,10 +44,10 @@ func BulkPostAllLocations(c *gin.Context) {
 		return
 	}
 
-	result := initializers.Client.DB.From("locations").Insert(locations).Execute(&results)
+	err := initializers.Client.DB.From("locations").Insert(locations).Execute(&results)
 
-	if result != nil {
-		fmt.Println(result)
+	if err != nil {
+		fmt.Println(err)
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{Message: models.GenericError, Code: http.StatusBadRequest})
 		return
 	}
