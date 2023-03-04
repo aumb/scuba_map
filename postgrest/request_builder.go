@@ -110,10 +110,14 @@ type QueryRequestBuilder struct {
 }
 
 func (b *QueryRequestBuilder) Execute(r interface{}) error {
-	return b.ExecuteWithContext(context.Background(), r)
+	return b.ExecuteWithContext(context.Background(), r, nil)
 }
 
-func (b *QueryRequestBuilder) ExecuteWithContext(ctx context.Context, r interface{}) error {
+func (b *QueryRequestBuilder) AuthExecute(r interface{}, userToken string) error {
+	return b.ExecuteWithContext(context.Background(), r, &userToken)
+}
+
+func (b *QueryRequestBuilder) ExecuteWithContext(ctx context.Context, r interface{}, userToken *string) error {
 	data, err := json.Marshal(b.json)
 	if err != nil {
 		return err
@@ -125,6 +129,12 @@ func (b *QueryRequestBuilder) ExecuteWithContext(ctx context.Context, r interfac
 
 	req.URL.RawQuery = b.params.Encode()
 	req.Header = b.client.Headers()
+
+	if userToken != nil {
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", *userToken))
+	}
+
+	fmt.Println(req.Header)
 
 	// inject/override custom headers
 	for key, vals := range b.header {

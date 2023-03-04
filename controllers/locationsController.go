@@ -37,6 +37,7 @@ func BulkPostAllLocations(c *gin.Context) {
 	var results []models.Location
 
 	binder := c.Bind(&locations)
+	token, _ := c.Get("userToken")
 
 	if binder != nil {
 		fmt.Println(binder)
@@ -44,7 +45,7 @@ func BulkPostAllLocations(c *gin.Context) {
 		return
 	}
 
-	err := initializers.Client.DB.From("locations").Insert(locations).Execute(&results)
+	err := initializers.Client.DB.From("locations").Insert(locations).AuthExecute(&results, fmt.Sprintf("%s", token))
 
 	if err != nil {
 		fmt.Println(err)
