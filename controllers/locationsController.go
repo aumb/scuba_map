@@ -16,7 +16,9 @@ func GetAllLocations(c *gin.Context) {
 
 	pagination := utils.GeneratePaginationFromRequest(c)
 
-	err := initializers.Client.DB.From("locations").Select("*").Order("name", &postgrest_go.OrderOpts{Ascending: true}).LimitWithOffset(pagination.Limit, pagination.Offset).Execute(&locations)
+	err := initializers.Client.DB.From("locations").Select("*").
+		Order("name", &postgrest_go.OrderOpts{Ascending: true}).
+		LimitWithOffset(pagination.Limit, pagination.Offset).Execute(&locations)
 
 	if err != nil {
 		fmt.Println(err)
